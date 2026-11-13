@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  .title { position: absolute; left: 120px; top: 250px; z-index: 3; }
+  .kicker { font-size: 36px; font-weight: 500; color: var(--copper); letter-spacing: 0.12em; }
+  .h1 { margin-top: 26px; font-size: 168px; font-weight: 900; line-height: 1; letter-spacing: -0.01em; }
+  .h1 .num { color: var(--copper-hi); font-weight: 800; letter-spacing: -0.04em; text-shadow: 0 0 60px rgba(217, 138, 82, 0.3); }
+  .h2 { margin-top: 28px; font-size: 96px; font-weight: 800; line-height: 1.1; }
+  .sub { margin-top: 36px; font-size: 40px; font-weight: 400; color: var(--ink-2); }
+
+  .stats { position: absolute; left: 120px; bottom: 110px; display: flex; gap: 88px; z-index: 3; }
+  .stats .v { font-family: var(--font-num); font-size: 64px; font-weight: 700; color: var(--ink); }
+  .stats .v small { font-size: 32px; color: var(--ink-2); margin-left: 6px; font-weight: 500; }
+  .stats .k { margin-top: 4px; font-size: 32px; color: var(--ink-2); }
+  .stats .v.sig { color: var(--signal); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <svg class="layer" id="art" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+  <div class="corner-tag">LLM INTERCONNECT · EP.01</div>
+
+  <div class="title">
+    <div class="kicker">大模型训练与推理 · 通信全景</div>
+    <div class="h1"><span class="num">72</span> 块 GPU</div>
+    <div class="h2">像一块 GPU 一样工作</div>
+    <div class="sub">以 GB200 NVL72 为例：连接、带宽、耗时、集合通信</div>
+  </div>
+
+  <div class="stats">
+    <div><div class="v">5,000<small>+</small></div><div class="k">根铜缆</div></div>
+    <div><div class="v">≈3.2<small>km</small></div><div class="k">NVLink 脊柱总长</div></div>
+    <div><div class="v sig">130<small>TB/s</small></div><div class="k">柜内全互连带宽</div></div>
+  </div>
+</div>
+<script>
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("art");
+  const el = (tag, attrs, parent = svg) => {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    parent.appendChild(n);
+    return n;
+  };
+  const defs = el("defs", {});
+  const g = el("linearGradient", { id: "cu", x1: "0", x2: "0", y1: "0", y2: "1" }, defs);
+  el("stop", { offset: "0", "stop-color": "#6f3f22", "stop-opacity": "0" }, g);
+  el("stop", { offset: "0.25", "stop-color": "#d98a52", "stop-opacity": "0.85" }, g);
+  el("stop", { offset: "0.5", "stop-color": "#f4b781", "stop-opacity": "1" }, g);
+  el("stop", { offset: "0.75", "stop-color": "#d98a52", "stop-opacity": "0.85" }, g);
+  el("stop", { offset: "1", "stop-color": "#6f3f22", "stop-opacity": "0" }, g);
+  const glow = el("filter", { id: "glow", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+  el("feGaussianBlur", { stdDeviation: "7", result: "b" }, glow);
+  const m = el("feMerge", {}, glow);
+  el("feMergeNode", { in: "b" }, m);
+  el("feMergeNode", { in: "SourceGraphic" }, m);
+
+  // Cable spine: 72 copper runs pinched into a bundle at mid-height, fanning out top and bottom.
+  let seed = 7;
+  const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const CX = 1490, N = 72;
+  const paths = [];
+  for (let i = 0; i < N; i++) {
+    const u = i / (N - 1) - 0.5;
+    const topX = CX + u * 820 + (rand() - 0.5) * 30;
+    const botX = CX + u * 760 + (rand() - 0.5) * 30;
+    const midX = CX + u * 150;
+    const d = `M${topX} -20 C ${topX} 280, ${midX} 360, ${midX} 540 S ${botX} 800, ${botX} 1100`;
+    const w = 1.2 + rand() * 1.6;
+    const op = 0.35 + rand() * 0.55;
+    paths.push(d);
+    el("path", { d, fill: "none", stroke: "url(#cu)", "stroke-width": w, opacity: op });
+  }
+  // Bundle clamps.
+  for (const y of [430, 540, 650]) {
+    const half = y === 540 ? 92 : 108;
+    el("rect", { x: CX - half, y: y - 7, width: half * 2, height: 14, rx: 7, fill: "#1a1410", stroke: "#f4b781", "stroke-width": 1.5, opacity: 0.9 });
+  }
+  // A few packets in flight.
+  const probe = el("path", { d: "", fill: "none" });
+  [5, 18, 31, 44, 57, 66].forEach((i, k) => {
+    probe.setAttribute("d", paths[i]);
+    const L = probe.getTotalLength();
+    const p = probe.getPointAtLength(L * (0.2 + 0.11 * k));
+    el("circle", { cx: p.x, cy: p.y, r: 5.5, fill: "#43e0b5", filter: "url(#glow)" });
+  });
+  probe.remove();
+</script>
+</body>
+</html>

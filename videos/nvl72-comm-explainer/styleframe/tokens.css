@@ -1,0 +1,118 @@
+@font-face {
+  font-family: "Noto Sans SC";
+  src: url("fonts/NotoSansSC.ttf") format("truetype");
+  font-weight: 100 900;
+}
+
+:root {
+  --bg: #0a0c0e;
+  --bg-2: #11151a;
+  --grid: rgba(220, 230, 240, 0.045);
+  --ink: #eceef0;
+  --ink-2: #a2abb5;
+  --ink-3: #5d6772;
+  --copper: #d98a52;
+  --copper-hi: #f4b781;
+  --copper-lo: #6f3f22;
+  --signal: #43e0b5;
+  --signal-dim: rgba(67, 224, 181, 0.35);
+  --slow: #4a525b;
+
+  --font-cn: "Noto Sans SC", "WenQuanYi Micro Hei", sans-serif;
+  --font-num: "JetBrains Mono", "Noto Sans Mono", monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { background: #000; }
+
+.frame {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background:
+    radial-gradient(1200px 800px at 70% 45%, rgba(217, 138, 82, 0.07), transparent 70%),
+    radial-gradient(900px 700px at 15% 80%, rgba(67, 224, 181, 0.035), transparent 70%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--font-cn);
+  -webkit-font-smoothing: antialiased;
+}
+
+.frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, #000 40%, transparent 95%);
+}
+
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none;
+}
+
+.layer { position: absolute; inset: 0; }
+
+.chapter {
+  position: absolute;
+  left: 96px;
+  top: 72px;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  z-index: 3;
+}
+.chapter .no {
+  font-family: var(--font-num);
+  font-weight: 700;
+  font-size: 34px;
+  color: var(--copper);
+  letter-spacing: 0.04em;
+}
+.chapter .name {
+  font-size: 34px;
+  font-weight: 500;
+  color: var(--ink-2);
+  letter-spacing: 0.06em;
+}
+
+.corner-tag {
+  position: absolute;
+  right: 96px;
+  top: 78px;
+  font-family: var(--font-num);
+  font-size: 22px;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  z-index: 3;
+}
+
+.caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 190px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 40px;
+  background: linear-gradient(to top, rgba(6, 8, 10, 0.92) 30%, transparent);
+  font-size: 56px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  z-index: 4;
+}
+.caption em { font-style: normal; color: var(--copper-hi); }
+.caption .sig { color: var(--signal); }
+
+.num { font-family: var(--font-num); font-variant-numeric: tabular-nums; }
