@@ -1,0 +1,22 @@
+{
+  "name": "nvl72-comm-explainer",
+  "private": true,
+  "scripts": {
+    "dev": "remotion studio src/index.ts",
+    "still": "remotion still src/index.ts Nvl72Film",
+    "fonts": "sh scripts/install-fonts.sh",
+    "render": "sh scripts/install-fonts.sh && remotion render src/index.ts Nvl72Film out/nvl72.mp4 --concurrency=2",
+    "render:vertical": "sh scripts/install-fonts.sh && remotion render src/index.ts Nvl72Vertical out/nvl72-vertical.mp4 --concurrency=2",
+    "still:vertical": "remotion still src/index.ts Nvl72Vertical"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.484",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "remotion": "4.0.484"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.17",
+    "typescript": "6.0.3"
+  }
+}

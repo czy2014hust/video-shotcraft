@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  .rack-label {
+    position: absolute;
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+  .rack-label b { font-family: var(--font-num); font-weight: 700; color: var(--ink); margin-right: 8px; }
+  .rack-label.sw b { color: var(--signal); }
+
+  .stat {
+    position: absolute;
+    left: 700px;
+    top: 196px;
+  }
+  .stat .k { font-size: 34px; font-weight: 500; color: var(--ink-2); }
+  .stat .k b { font-family: var(--font-num); color: var(--ink); font-weight: 700; }
+  .stat .v {
+    font-family: var(--font-num);
+    font-weight: 800;
+    font-size: 128px;
+    line-height: 1.05;
+    color: var(--copper-hi);
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 40px rgba(217, 138, 82, 0.25);
+  }
+  .stat .v small { font-size: 56px; font-weight: 600; color: var(--copper); margin-left: 12px; }
+  .stat .u { font-size: 32px; color: var(--ink-2); margin-top: 6px; }
+
+  .gpu-label {
+    position: absolute;
+    left: 700px;
+    top: 770px;
+    line-height: 1.3;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+  .gpu-label b { font-family: var(--font-num); color: var(--ink); font-weight: 700; }
+  .gpu-label .big { font-family: var(--font-num); color: var(--signal); font-weight: 800; font-size: 44px; }
+
+  .sw-label {
+    position: absolute;
+    left: 1566px;
+    top: 400px;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+  .sw-label .n { font-family: var(--font-num); color: var(--signal); font-size: 64px; font-weight: 800; display: block; line-height: 1; }
+  .sw-label .s { font-size: 32px; font-weight: 400; color: var(--ink-2); }
+</style>
+</head>
+<body>
+<div class="frame" id="f">
+  <svg class="layer" id="art" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+
+  <div class="chapter"><span class="no">03</span><span class="name">拆开 NVL72 机柜</span></div>
+  <div class="corner-tag">GB200 · NVL72 · NVLINK 5</div>
+
+  <div class="rack-label" style="left:470px; top:302px"><b>10×</b>计算托盘</div>
+  <div class="rack-label sw" style="left:470px; top:521px"><b>9×</b>交换托盘</div>
+  <div class="rack-label" style="left:470px; top:716px"><b>8×</b>计算托盘</div>
+
+  <div class="stat">
+    <div class="k"><b>18</b> 条 NVLink 5 × <b>100</b> GB/s</div>
+    <div class="v">1.8<small>TB/s</small></div>
+    <div class="u">每块 GPU · 双向</div>
+  </div>
+
+  <div class="gpu-label">× <b>72</b> 块 GPU<br/><span class="big">≈130 TB/s</span> 全互连</div>
+
+  <div class="sw-label">
+    <span class="n">18</span>颗 NVLink<br/>交换芯片
+    <div class="s">每颗连全部 72 卡</div>
+  </div>
+
+  <div class="caption">18 条 NVLink 连向 18 颗交换芯片：任意两卡，<em>一跳直达</em></div>
+</div>
+
+<script>
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("art");
+  const el = (tag, attrs, parent = svg) => {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    parent.appendChild(n);
+    return n;
+  };
+
+  const defs = el("defs", {});
+  const g1 = el("linearGradient", { id: "link", x1: "0", x2: "1", y1: "0", y2: "0" }, defs);
+  el("stop", { offset: "0", "stop-color": "#f4b781", "stop-opacity": "0.95" }, g1);
+  el("stop", { offset: "0.65", "stop-color": "#d98a52", "stop-opacity": "0.55" }, g1);
+  el("stop", { offset: "1", "stop-color": "#43e0b5", "stop-opacity": "0.8" }, g1);
+  const glow = el("filter", { id: "glow", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+  el("feGaussianBlur", { stdDeviation: "6", result: "b" }, glow);
+  const m = el("feMerge", {}, glow);
+  el("feMergeNode", { in: "b" }, m);
+  el("feMergeNode", { in: "SourceGraphic" }, m);
+
+  // Rack elevation: power, 10 compute, 9 switch, 8 compute, power.
+  const RX = 110, RW = 320, TOP = 180, TH = 19, GAP = 4;
+  el("rect", { x: RX - 14, y: TOP - 22, width: RW + 28, height: 724, rx: 10, fill: "#0e1216", stroke: "#2a3138", "stroke-width": 2 });
+  const rows = [["pwr"], ...Array(10).fill(["cmp"]), ...Array(9).fill(["sw"]), ...Array(8).fill(["cmp"]), ["pwr"]];
+  const HL = 6;
+  let y = TOP;
+  let hlY = 0;
+  const bracket = {};
+  rows.forEach(([kind], i) => {
+    const isHL = i === HL;
+    if (kind === "pwr") {
+      el("rect", { x: RX, y, width: RW, height: TH + 8, rx: 3, fill: "#151a1f", stroke: "#262d34" });
+      for (let k = 0; k < 6; k++) el("rect", { x: RX + 16 + k * 50, y: y + 9, width: 36, height: 10, rx: 2, fill: "#20262d" });
+      y += TH + 8 + GAP;
+      return;
+    }
+    (bracket[kind + (i < 15 ? "a" : "b")] ||= []).push(y);
+    if (kind === "cmp") {
+      el("rect", { x: RX, y, width: RW, height: TH, rx: 3, fill: isHL ? "#2a1a10" : "#14181c", stroke: isHL ? "#f4b781" : "#3a2a20", "stroke-width": isHL ? 2.5 : 1 });
+      for (let k = 0; k < 2; k++) el("rect", { x: RX + 14 + k * 38, y: y + 5, width: 28, height: TH - 10, rx: 2, fill: "#3b444d" });
+      for (let k = 0; k < 4; k++) el("rect", { x: RX + 110 + k * 50, y: y + 4, width: 34, height: TH - 8, rx: 2, fill: isHL ? "#f4b781" : "#8a5634" });
+      if (isHL) hlY = y + TH / 2;
+    } else {
+      el("rect", { x: RX, y, width: RW, height: TH, rx: 3, fill: "#0f1916", stroke: "#1e3a32" });
+      for (let k = 0; k < 2; k++) el("rect", { x: RX + 90 + k * 100, y: y + 5, width: 70, height: TH - 10, rx: 2, fill: "#2f8f74" });
+    }
+    y += TH + GAP;
+  });
+
+  // Brackets beside the rack.
+  const BX = RX + RW + 26;
+  for (const key of ["cmpa", "cmpb"]) {
+    const ys = bracket[key];
+    const y0 = ys[0], y1 = ys[ys.length - 1] + TH;
+    const c = key.startsWith("sw") ? "#2f8f74" : "#6f3f22";
+    el("path", { d: `M${BX - 8} ${y0} H${BX} V${y1} H${BX - 8}`, fill: "none", stroke: c, "stroke-width": 2 });
+  }
+  // Switch rows straddle index 11..19, which spans both "a" and "b" halves.
+  const swYs = [...(bracket.swa || []), ...(bracket.swb || [])];
+  if (swYs.length) {
+    const y0 = swYs[0], y1 = swYs[swYs.length - 1] + TH;
+    el("path", { d: `M${BX - 8} ${y0} H${BX} V${y1} H${BX - 8}`, fill: "none", stroke: "#2f8f74", "stroke-width": 2 });
+  }
+
+  // Zoomed GPU and its 18 links.
+  const GX = 700, GY = 470, GS = 200;
+  const gcx = GX + GS / 2, gcy = GY + GS / 2;
+  el("path", { d: `M${RX + RW + 6} ${hlY} C ${560} ${hlY}, ${640} ${gcy}, ${GX - 8} ${gcy}`, fill: "none", stroke: "#f4b781", "stroke-width": 2, "stroke-dasharray": "6 8", opacity: 0.7 });
+  el("circle", { cx: RX + RW + 6, cy: hlY, r: 5, fill: "#f4b781" });
+
+  const SX = 1370, SW = 140, SH = 24, S0 = 168, SSTEP = 37.6;
+  for (let i = 0; i < 18; i++) {
+    const sy = S0 + i * SSTEP;
+    const oy = GY + 22 + (i * (GS - 44)) / 17;
+    const d = `M${GX + GS} ${oy} C ${GX + GS + 220} ${oy}, ${SX - 260} ${sy + SH / 2}, ${SX} ${sy + SH / 2}`;
+    el("path", { d, fill: "none", stroke: "url(#link)", "stroke-width": 2.6, opacity: 0.9 });
+    el("rect", { x: SX, y: sy, width: SW, height: SH, rx: 4, fill: "#0f1b18", stroke: "#43e0b5", "stroke-width": 1.5, opacity: 0.95 });
+    for (let p = 0; p < 6; p++) el("rect", { x: SX + 12 + p * 22, y: sy + 8, width: 12, height: 8, rx: 1, fill: "#43e0b5", opacity: 0.25 + 0.1 * (p % 3) });
+    el("circle", { cx: GX + GS, cy: oy, r: 3.2, fill: "#f4b781" });
+  }
+
+  // Data packets in flight on a few links.
+  [2, 7, 11, 15].forEach((i, k) => {
+    const sy = S0 + i * SSTEP + SH / 2;
+    const oy = GY + 22 + (i * (GS - 44)) / 17;
+    const tt = 0.42 + 0.13 * k;
+    const bez = (a, b, c, d, t) => (1 - t) ** 3 * a + 3 * (1 - t) ** 2 * t * b + 3 * (1 - t) * t * t * c + t ** 3 * d;
+    const px = bez(GX + GS, GX + GS + 220, SX - 260, SX, tt);
+    const py = bez(oy, oy, sy, sy, tt);
+    el("circle", { cx: px, cy: py, r: 6, fill: "#43e0b5", filter: "url(#glow)" });
+  });
+
+  // GPU package.
+  el("rect", { x: GX - 6, y: GY - 6, width: GS + 12, height: GS + 12, rx: 18, fill: "none", stroke: "#f4b781", "stroke-width": 1, opacity: 0.35 });
+  el("rect", { x: GX, y: GY, width: GS, height: GS, rx: 14, fill: "#1d140e", stroke: "#f4b781", "stroke-width": 2.5, filter: "url(#glow)" });
+  for (let r = 0; r < 2; r++) el("rect", { x: GX + 30 + r * 76, y: GY + 44, width: 64, height: 112, rx: 6, fill: "#2b1c12", stroke: "#d98a52", "stroke-width": 1.5 });
+  for (let k = 0; k < 4; k++) el("rect", { x: GX + 14, y: GY + 30 + k * 38, width: 8, height: 26, rx: 2, fill: "#8a5634" });
+  for (let k = 0; k < 4; k++) el("rect", { x: GX + GS - 22, y: GY + 30 + k * 38, width: 8, height: 26, rx: 2, fill: "#8a5634" });
+  const gt = el("text", { x: gcx, y: GY + GS + 52, fill: "#eceef0", "font-family": "JetBrains Mono", "font-size": 32, "font-weight": 700, "text-anchor": "middle" });
+  gt.textContent = "Blackwell GPU";
+</script>
+</body>
+</html>

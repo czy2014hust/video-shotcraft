@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="tokens.css" />
+<style>
+  .ring-title { position: absolute; left: 150px; top: 160px; font-family: var(--font-num); font-size: 44px; font-weight: 700; z-index: 3; }
+  .ring-title span { display: block; font-family: var(--font-cn); font-size: 32px; font-weight: 400; color: var(--ink-2); margin-top: 6px; }
+  .ring-note { position: absolute; left: 150px; top: 836px; font-size: 32px; color: var(--ink-2); z-index: 3; }
+  .ring-note b { font-family: var(--font-num); color: var(--ink); }
+
+  .formula { position: absolute; left: 980px; top: 176px; z-index: 3; }
+  .formula .f { font-family: var(--font-num); font-size: 96px; font-weight: 700; letter-spacing: -0.02em; }
+  .formula .f .a { color: var(--ink-2); }
+  .formula .f .b { color: var(--copper-hi); }
+  .formula .legend { margin-top: 10px; font-size: 32px; color: var(--ink-2); }
+  .formula .legend b { font-family: var(--font-num); color: var(--ink); }
+
+  .bars { position: absolute; left: 980px; top: 470px; width: 840px; z-index: 3; }
+  .bars .hd { font-size: 32px; color: var(--ink-2); margin-bottom: 26px; }
+  .bars .hd b { font-family: var(--font-num); color: var(--ink); }
+  .row { margin-bottom: 30px; }
+  .row .lb { display: flex; justify-content: space-between; align-items: baseline; font-size: 34px; font-weight: 500; margin-bottom: 10px; }
+  .row .lb .t { font-family: var(--font-num); font-size: 48px; font-weight: 800; }
+  .row .track { height: 18px; border-radius: 9px; background: rgba(255, 255, 255, 0.05); overflow: hidden; }
+  .row .fill { height: 100%; border-radius: 9px; }
+  .row.nvl .t { color: var(--copper-hi); }
+  .row.nvl .fill { background: linear-gradient(90deg, #f4b781, #d98a52); box-shadow: 0 0 16px rgba(244, 183, 129, 0.5); }
+  .row.sharp .t { color: var(--signal); }
+  .row.sharp .fill { background: var(--signal); box-shadow: 0 0 16px rgba(67, 224, 181, 0.5); }
+  .row.ib .lb { color: var(--ink-2); }
+  .row.ib .t { color: var(--ink-2); }
+  .row.ib .fill { background: repeating-linear-gradient(90deg, #4a525b 0 14px, #3a4148 14px 20px); }
+  .tiny { font-size: 32px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<div class="frame">
+  <svg class="layer" id="art" width="1920" height="1080" viewBox="0 0 1920 1080"></svg>
+  <div class="chapter"><span class="no">06</span><span class="name">通信要多久</span></div>
+  <div class="corner-tag">α–β MODEL · IDEALIZED</div>
+
+  <div class="ring-title">Ring AllReduce<span>ReduceScatter + AllGather · 示意 8 卡</span></div>
+  <div class="ring-note">每卡收发 ≈ <b>2(N−1)/N × S</b></div>
+
+  <div class="formula">
+    <div class="f">T ≈ <span class="a">α</span> + <span class="b">S / B</span></div>
+    <div class="legend"><b>α</b> 固定延迟 · <b>S</b> 数据量 · <b>B</b> 链路带宽</div>
+  </div>
+
+  <div class="bars">
+    <div class="hd"><b>10 GB</b> 梯度 · <b>72</b> 卡 AllReduce · 理想值</div>
+    <div class="row sharp">
+      <div class="lb"><span>NVLink + SHARP 交换机内归约</span><span class="t">≈11 ms</span></div>
+      <div class="track"><div class="fill" style="width:2.8%"></div></div>
+    </div>
+    <div class="row nvl">
+      <div class="lb"><span>NVLink 柜内 · 900 GB/s 单向</span><span class="t">≈22 ms</span></div>
+      <div class="track"><div class="fill" style="width:5.5%"></div></div>
+    </div>
+    <div class="row ib">
+      <div class="lb"><span>若全走 400G 网络 · 50 GB/s</span><span class="t">≈400 ms</span></div>
+      <div class="track"><div class="fill" style="width:100%"></div></div>
+    </div>
+  </div>
+
+  <div class="caption">同样 10 GB 梯度：柜内&nbsp;<em>22 毫秒</em>，走网络要 400 毫秒</div>
+</div>
+<script>
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.getElementById("art");
+  const el = (tag, attrs, parent = svg) => {
+    const n = document.createElementNS(NS, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    parent.appendChild(n);
+    return n;
+  };
+  const defs = el("defs", {});
+  const glow = el("filter", { id: "glow", x: "-50%", y: "-50%", width: "200%", height: "200%" }, defs);
+  el("feGaussianBlur", { stdDeviation: "6", result: "b" }, glow);
+  const m = el("feMerge", {}, glow);
+  el("feMergeNode", { in: "b" }, m);
+  el("feMergeNode", { in: "SourceGraphic" }, m);
+  const mk = el("marker", { id: "arr", viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "7", markerHeight: "7", orient: "auto" }, defs);
+  el("path", { d: "M0 0 L10 5 L0 10 z", fill: "#43e0b5" }, mk);
+
+  const CX = 460, CY = 560, R = 200, N = 8;
+  const palette = ["#f4b781", "#43e0b5", "#8fb4ff", "#e58aa8", "#d9c76a", "#9be38a", "#c39bf0", "#6fd3e8"];
+  el("circle", { cx: CX, cy: CY, r: R, fill: "none", stroke: "#d98a52", "stroke-width": 2, opacity: 0.35, "stroke-dasharray": "4 10" });
+
+  for (let i = 0; i < N; i++) {
+    const a0 = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+    const a1 = -Math.PI / 2 + ((i + 1) * 2 * Math.PI) / N;
+    const pad = 0.2;
+    const sx = CX + R * Math.cos(a0 + pad), sy = CY + R * Math.sin(a0 + pad);
+    const ex = CX + R * Math.cos(a1 - pad), ey = CY + R * Math.sin(a1 - pad);
+    el("path", { d: `M${sx} ${sy} A ${R} ${R} 0 0 1 ${ex} ${ey}`, fill: "none", stroke: "#43e0b5", "stroke-width": 3, "marker-end": "url(#arr)", opacity: 0.85 });
+    // Chunk in flight on this hop.
+    const am = (a0 + a1) / 2;
+    const cx = CX + (R + 0) * Math.cos(am), cy = CY + (R + 0) * Math.sin(am);
+    el("rect", { x: cx - 13, y: cy - 13, width: 26, height: 26, rx: 5, fill: palette[i], filter: "url(#glow)", transform: `rotate(${(am * 180) / Math.PI + 90} ${cx} ${cy})` });
+  }
+
+  for (let i = 0; i < N; i++) {
+    const a = -Math.PI / 2 + (i * 2 * Math.PI) / N;
+    const x = CX + R * Math.cos(a), y = CY + R * Math.sin(a);
+    el("rect", { x: x - 46, y: y - 46, width: 92, height: 92, rx: 14, fill: "#1d140e", stroke: "#f4b781", "stroke-width": 2.2 });
+    // Per-GPU buffer: 8 slots, partially reduced.
+    for (let k = 0; k < 8; k++) {
+      const filled = (k + 8 - i) % 8 < 3;
+      el("rect", { x: x - 34 + (k % 4) * 17.5, y: y - 30 + Math.floor(k / 4) * 22, width: 14, height: 16, rx: 2, fill: filled ? palette[k] : "#2b1c12", opacity: filled ? 0.95 : 1 });
+    }
+    const t = el("text", { x, y: y + 34, fill: "#a2abb5", "font-family": "JetBrains Mono", "font-size": 18, "text-anchor": "middle" });
+    t.textContent = "GPU" + i;
+  }
+</script>
+</body>
+</html>
