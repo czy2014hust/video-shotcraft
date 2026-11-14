@@ -58,7 +58,7 @@ const VCaption: React.FC<{ text: string; duration: number }> = ({ text, duration
   return (
     <AbsoluteFill style={{ pointerEvents: 'none', opacity: enter * exit }}>
       <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 360, background: 'linear-gradient(to top, rgba(6,8,10,0.95) 40%, transparent)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', padding: '0 64px 84px' }}>
-        <div style={{ fontFamily: CN, fontSize: 58, fontWeight: 500, lineHeight: 1.3, textAlign: 'center' }}>
+        <div style={{ fontFamily: CN, fontSize: 58, fontWeight: 500, lineHeight: 1.3, textAlign: 'center', color: INK }}>
           {text.split('\n').map((l, i) => <div key={i}>{l}</div>)}
         </div>
       </div>
