@@ -1,5 +1,6 @@
-import { Caption } from './gfx';
 import { Film } from './Film';
+import { Progress } from './Progress';
+import { Caption } from './gfx';
 import { AnatomyShot } from './shots/Anatomy';
 import { CollectivesShot } from './shots/Collectives';
 import { CostShot } from './shots/Cost';
@@ -7,9 +8,11 @@ import { InferShot } from './shots/Infer';
 import { LadderShot } from './shots/Ladder';
 import { OPEN_DEFAULTS, OpenShot } from './shots/Open';
 import { OUTRO_DEFAULTS, OutroShot } from './shots/Outro';
-import { RingShot } from './shots/Ring';
 import { ScaleShot } from './shots/Scale';
 import { SplitShot } from './shots/Split';
+import { TermsShot } from './shots/Terms';
+import { TopologiesShot } from './shots/Topologies';
+import { TrafficShot } from './shots/Traffic';
 import { TrainShot } from './shots/Train';
 import { BG } from './theme';
 import { CAPTIONS, FPS, SFX, SHOTS, TOTAL } from './timeline';
@@ -19,11 +22,13 @@ const textSchema = (label: string) => [{ type: 'text' as const, key: 'text', lab
 const SCENE = {
   open: OpenShot,
   split: SplitShot,
+  terms: TermsShot,
+  topologies: TopologiesShot,
   ladder: LadderShot,
   anatomy: AnatomyShot,
   scale: ScaleShot,
   collectives: CollectivesShot,
-  ring: RingShot,
+  traffic: TrafficShot,
   cost: CostShot,
   train: TrainShot,
   infer: InferShot,
@@ -66,7 +71,15 @@ export const WORKBENCH = {
       : {}),
   })),
   transitions: [],
-  overlays: [],
+  overlays: [
+    {
+      id: 'progress',
+      label: '进度条',
+      from: 0,
+      duration: TOTAL,
+      component: Progress,
+    },
+  ],
   captions: CAPTIONS.map((cue) => ({
     id: cue.id,
     label: cue.text.split('\n')[0],
@@ -85,6 +98,6 @@ export const WORKBENCH = {
     label: cue.note,
   })),
   bgm: [],
-  order: ['captions'] as const,
+  order: ['overlays', 'captions'] as const,
   original: Film,
 };

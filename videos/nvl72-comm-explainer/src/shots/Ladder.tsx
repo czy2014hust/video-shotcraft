@@ -18,9 +18,10 @@ export const LadderShot: React.FC = () => {
   const frame = useCurrentFrame();
   const trap = rise(frame, BEAT.ladderTrap, 22);
   const strike = rise(frame, BEAT.ladderTrap, 16);
+  const notes = fade(frame, 320, 22);
 
   return (
-    <Stage chapter="03" name="带宽阶梯" tag="单向对齐">
+    <Stage chapter="05" name="带宽阶梯" tag="单向对齐">
       <div style={{ position: 'absolute', left: 96, top: 148, width: 1040 }}>
         {ROWS.map((row, index) => {
           const t = rise(frame, 18 + index * 28, 26);
@@ -48,10 +49,10 @@ export const LadderShot: React.FC = () => {
             </div>
           );
         })}
-        <div style={{ marginTop: 8, fontSize: 32, color: INK3 }}>
+        <div style={{ marginTop: 8, fontSize: 32, color: INK3, opacity: notes }}>
           条按 NVLink 单向 900 GB/s 对齐。HBM 约是它的 9 倍，单独画满。PCIe 双向约 128 GB/s。
         </div>
-        <div style={{ marginTop: 10, fontSize: 32, color: INK2 }}>
+        <div style={{ marginTop: 10, fontSize: 32, color: INK2, opacity: notes }}>
           NVLink-C2C：Grace 与两块 GPU <span style={{ color: INK }}>共享 900 GB/s 双向</span>
         </div>
       </div>

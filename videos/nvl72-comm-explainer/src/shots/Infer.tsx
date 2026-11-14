@@ -11,7 +11,7 @@ export const InferShot: React.FC = () => {
   const note = fade(frame, 180, 20);
 
   return (
-    <Stage chapter="10" name="推理看延迟" tag="decode / KV">
+    <Stage chapter="12" name="推理看延迟" tag="decode / KV">
       <Card x={96} y={180} opacity={left} kicker="DECODE" title="逐 token 解码" body={'每生成一个 token，张量并行都要做一次很小的 AllReduce。\n数据不大，时间几乎全是固定延迟。'} accent={SIGNAL} />
       <Card x={1000} y={180} opacity={right} kicker="PREFILL → DECODE" title="KV Cache 要搬走" body={'预填充和解码拆开时，缓存要跨卡搬一次。\n这一下看的是带宽，不是延迟。'} accent={COPPER_HI} />
       <svg width="1920" height="1080" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
@@ -19,7 +19,7 @@ export const InferShot: React.FC = () => {
         <rect x={878 + fly * 70} y={346} width={26} height={26} rx={5} fill={COPPER_HI} opacity={right} />
       </svg>
       <div style={{ position: 'absolute', left: 96, right: 96, top: 700, fontSize: 40, fontWeight: 500, opacity: note }}>
-        MoE 的专家交换是 All-to-All。这块又频繁又大，是 NVL72 柜内带宽最能拉开差距的地方。
+        MoE 的专家交换就是前面算过的 All-to-All。账看 busBW，留在柜内。
       </div>
     </Stage>
   );

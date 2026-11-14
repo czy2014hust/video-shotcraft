@@ -28,9 +28,10 @@ export const AnatomyShot: React.FC = () => {
   const frame = useCurrentFrame();
   const gpuIn = fade(frame, 8, 24);
   const numbers = fade(frame, BEAT.anatomyLinks + 16, 24);
+  const domain = fade(frame, BEAT.anatomyAll, 24);
 
   return (
-    <Stage chapter="04" name="拆开 NVL72" tag="示意图">
+    <Stage chapter="06" name="拆开 NVL72" tag="示意图">
       <svg width="1920" height="1080" style={{ position: 'absolute', inset: 0 }}>
         <defs>
           <linearGradient id="link" x1="0" x2="1">
@@ -100,7 +101,7 @@ export const AnatomyShot: React.FC = () => {
         </div>
       </div>
 
-      <div style={{ position: 'absolute', left: 1360, top: 168, opacity: numbers }}>
+      <div style={{ position: 'absolute', left: 1360, top: 168, opacity: domain }}>
         <div style={{ fontFamily: MONO, fontSize: 64, fontWeight: 700, color: SIGNAL, lineHeight: 1 }}>18</div>
         <div style={{ fontSize: 32, fontWeight: 500, marginTop: 6 }}>颗交换芯片</div>
         <div style={{ fontSize: 32, color: INK2, marginTop: 4 }}>每颗连全部 72 卡</div>

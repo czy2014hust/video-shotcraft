@@ -18,7 +18,7 @@ export const OutroShot: React.FC<Partial<typeof OUTRO_DEFAULTS>> = (props) => {
   const line = fade(frame, BEAT.outroLock + 8, 20);
 
   return (
-    <Stage chapter="11" name="收束">
+    <Stage chapter="13" name="收束">
       <div
         style={{
           position: 'absolute',

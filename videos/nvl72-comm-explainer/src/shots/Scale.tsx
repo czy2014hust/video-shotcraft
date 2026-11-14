@@ -13,7 +13,7 @@ export const ScaleShot: React.FC = () => {
   const center = 960;
 
   return (
-    <Stage chapter="05" name="柜内与柜间" tag="scale-up / scale-out">
+    <Stage chapter="07" name="柜内与柜间" tag="单向 · 18×">
       {[ -1, 0, 1 ].map((slot) => {
         const show = slot === 0 ? 1 : pull;
         const x = center + slot * gap - rackW / 2;

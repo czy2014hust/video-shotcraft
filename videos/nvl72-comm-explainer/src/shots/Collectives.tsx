@@ -12,7 +12,7 @@ const MODES = [
 
 const COLORS = ['#f4b781', '#43e0b5', '#8fb4ff', '#e58aa8', '#d9c76a'];
 const N = 5;
-const PHASE = 80;
+const PHASE = 120;
 
 export const CollectivesShot: React.FC = () => {
   const frame = useCurrentFrame();
@@ -21,7 +21,7 @@ export const CollectivesShot: React.FC = () => {
   const move = rise(local, 12, 40);
 
   return (
-    <Stage chapter="06" name="集合通信" tag="示意 · 5 卡">
+    <Stage chapter="08" name="集合通信" tag="示意 · 5 卡">
       <div style={{ position: 'absolute', left: 80, right: 80, top: 140, display: 'flex', gap: 18 }}>
         {MODES.map((mode, index) => {
           const on = index === phase;

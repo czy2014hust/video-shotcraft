@@ -11,6 +11,7 @@ export const SplitShot: React.FC = () => {
   const enter = fade(frame, 8, 28);
   const split = rise(frame, BEAT.splitBreak, 96);
   const verdict = fade(frame, 196, 24);
+  const count = fade(frame, 330, 22);
 
   return (
     <Stage chapter="02" name="为什么要通信" tag="示意 · 权重">
@@ -69,6 +70,10 @@ export const SplitShot: React.FC = () => {
         </div>
         <div style={{ fontSize: 40, fontWeight: 700, color: COPPER }}>装不下 810 GB</div>
         <div style={{ fontSize: 36, color: INK2 }}>图上 8 块是示意，NVL72 有 72 块</div>
+      </div>
+      <div style={{ position: 'absolute', left: 96, top: 760, fontSize: 36, color: INK, opacity: count }}>
+        810 ÷ 186 ≈ <Num size={48} color={COPPER_HI}>4.4</Num>
+        <span style={{ color: INK2 }}> ，光权重至少 5 块卡，还没算 KV 和激活</span>
       </div>
     </Stage>
   );

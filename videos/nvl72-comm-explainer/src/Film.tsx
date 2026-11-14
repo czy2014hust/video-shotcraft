@@ -1,5 +1,6 @@
 import React from 'react';
 import { AbsoluteFill, Audio, Sequence, staticFile } from 'remotion';
+import { Progress } from './Progress';
 import { Caption } from './gfx';
 import { AnatomyShot } from './shots/Anatomy';
 import { CollectivesShot } from './shots/Collectives';
@@ -8,9 +9,11 @@ import { InferShot } from './shots/Infer';
 import { LadderShot } from './shots/Ladder';
 import { OpenShot } from './shots/Open';
 import { OutroShot } from './shots/Outro';
-import { RingShot } from './shots/Ring';
 import { ScaleShot } from './shots/Scale';
 import { SplitShot } from './shots/Split';
+import { TermsShot } from './shots/Terms';
+import { TopologiesShot } from './shots/Topologies';
+import { TrafficShot } from './shots/Traffic';
 import { TrainShot } from './shots/Train';
 import { BG } from './theme';
 import { CAPTIONS, SFX, SHOTS } from './timeline';
@@ -18,11 +21,13 @@ import { CAPTIONS, SFX, SHOTS } from './timeline';
 const SCENES = {
   open: OpenShot,
   split: SplitShot,
+  terms: TermsShot,
+  topologies: TopologiesShot,
   ladder: LadderShot,
   anatomy: AnatomyShot,
   scale: ScaleShot,
   collectives: CollectivesShot,
-  ring: RingShot,
+  traffic: TrafficShot,
   cost: CostShot,
   train: TrainShot,
   infer: InferShot,
@@ -49,5 +54,6 @@ export const Film: React.FC = () => (
         <Audio src={staticFile(cue.src)} volume={cue.volume} />
       </Sequence>
     ))}
+    <Progress />
   </AbsoluteFill>
 );
