@@ -49,6 +49,9 @@ export const LadderShot: React.FC = () => {
             </div>
           );
         })}
+        <div style={{ marginTop: 4, fontSize: 36, color: INK, opacity: notes }}>
+          折算：NVLink 是 400G 的 <Num size={44} color={COPPER_HI}>18×</Num>，是 PCIe 的约 <Num size={44} color={COPPER_HI}>14×</Num>
+        </div>
         <div style={{ marginTop: 8, fontSize: 32, color: INK3, opacity: notes }}>
           条按 NVLink 单向 900 GB/s 对齐。HBM 约是它的 9 倍，单独画满。PCIe 双向约 128 GB/s。
         </div>

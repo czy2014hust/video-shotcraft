@@ -46,6 +46,9 @@ export const ScaleShot: React.FC = () => {
           opacity={pull}
         />
       </svg>
+      <div style={{ position: 'absolute', left: 0, right: 0, top: 636, textAlign: 'center', fontSize: 32, color: SLOW, opacity: pull }}>
+        柜与柜之间只剩网卡那条线：400G · 单向 50 GB/s
+      </div>
       <div style={{ position: 'absolute', left: 96, top: 680, opacity: ratio }}>
         <div style={{ fontSize: 36, color: INK2 }}>单向带宽</div>
         <div style={{ marginTop: 8, fontSize: 40 }}>
@@ -84,8 +87,17 @@ const Rack: React.FC<{ width: number; hot: boolean }> = ({ width, hot }) => (
           flex: 1,
           borderRadius: 3,
           background: i % 4 === 2 ? (hot ? '#14302a' : '#121816') : hot ? '#2a1a10' : '#161412',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 5,
+          padding: '0 8px',
         }}
-      />
+      >
+        {Array.from({ length: 8 }, (_, d) => (
+          <div key={d} style={{ flex: 1, height: '55%', borderRadius: 2, background: i % 4 === 2 ? '#43e0b5' : hot ? '#d98a52' : '#3a4148', opacity: i % 4 === 2 ? 0.8 : 0.75 }} />
+        ))}
+      </div>
     ))}
+    <div style={{ textAlign: 'center', fontSize: 32, color: hot ? '#f4b781' : '#8b949e', paddingTop: 2 }}>{hot ? '72 GPU' : '另一柜'}</div>
   </div>
 );

@@ -42,8 +42,20 @@ const ScaleBeat: React.FC<{ pull: number }> = ({ pull }) => {
                 border: `2px solid ${slot === 0 ? COPPER_HI : SLOW}`,
                 background: slot === 0 ? '#1d140e' : '#12161b',
                 boxShadow: slot === 0 ? '0 0 28px rgba(244,183,129,0.25)' : 'none',
+                padding: 18,
+                display: 'grid',
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gap: 10,
+                alignContent: 'start',
               }}
-            />
+            >
+              {Array.from({ length: 12 }, (_, d) => (
+                <div key={d} style={{ height: 34, borderRadius: 5, background: slot === 0 ? COPPER : '#2a3138', opacity: slot === 0 ? 0.85 : 0.6 }} />
+              ))}
+              <div style={{ gridColumn: '1 / -1', marginTop: 8, fontSize: 32, color: slot === 0 ? COPPER_HI : INK2, textAlign: 'center' }}>
+                {slot === 0 ? '域内加卡' : '域外加柜'}
+              </div>
+            </div>
             <div style={{ marginTop: 16, textAlign: 'center', fontSize: 32, color: slot === 0 ? COPPER_HI : INK2 }}>
               {slot === 0 ? 'scale-up' : 'scale-out'}
             </div>
@@ -60,6 +72,9 @@ const ScaleBeat: React.FC<{ pull: number }> = ({ pull }) => {
 
 const DirectionBeat: React.FC<{ both: number }> = ({ both }) => (
   <div style={{ position: 'absolute', left: 180, right: 180, top: 300 }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14, fontFamily: 'JetBrains Mono, monospace', fontSize: 32, color: INK2 }}>
+      <span>GPU A</span><span>GPU B</span>
+    </div>
     <svg width="1560" height="160">
       <line x1={80} y1={80} x2={1480} y2={80} stroke={COPPER} strokeWidth={6} />
       <polygon points="1480,80 1450,64 1450,96" fill={COPPER_HI} />
@@ -109,7 +124,9 @@ const HopBeat: React.FC<{ hop: number; domain: number }> = ({ hop, domain }) => 
     <div style={{ position: 'absolute', left: 860, top: 560, width: 200, textAlign: 'center', fontSize: 32, color: COPPER_HI, opacity: hop }}>
       1 跳
     </div>
-    <div style={{ position: 'absolute', left: 420, top: 700, fontSize: 32, color: INK3, opacity: domain }}>示意图</div>
+    <div style={{ position: 'absolute', left: 420, top: 700, fontSize: 32, color: INK3, opacity: domain }}>
+      域内一跳就到；出了这个框，要经网卡、多跳、慢一个量级（第 07 章细算）
+    </div>
   </>
 );
 

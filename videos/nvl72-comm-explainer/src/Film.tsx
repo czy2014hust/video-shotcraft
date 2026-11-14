@@ -4,7 +4,7 @@ import { Progress } from './Progress';
 import { Caption } from './gfx';
 import { AnatomyShot } from './shots/Anatomy';
 import { CollectivesShot } from './shots/Collectives';
-import { CostShot } from './shots/Cost';
+import { CommTimeShot } from './shots/CommTime';
 import { InferShot } from './shots/Infer';
 import { LadderShot } from './shots/Ladder';
 import { OpenShot } from './shots/Open';
@@ -13,7 +13,6 @@ import { ScaleShot } from './shots/Scale';
 import { SplitShot } from './shots/Split';
 import { TermsShot } from './shots/Terms';
 import { TopologiesShot } from './shots/Topologies';
-import { TrafficShot } from './shots/Traffic';
 import { TrainShot } from './shots/Train';
 import { BG } from './theme';
 import { CAPTIONS, SFX, SHOTS } from './timeline';
@@ -27,8 +26,7 @@ const SCENES = {
   anatomy: AnatomyShot,
   scale: ScaleShot,
   collectives: CollectivesShot,
-  traffic: TrafficShot,
-  cost: CostShot,
+  commtime: CommTimeShot,
   train: TrainShot,
   infer: InferShot,
   outro: OutroShot,

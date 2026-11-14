@@ -11,14 +11,29 @@ export const InferShot: React.FC = () => {
   const note = fade(frame, 180, 20);
 
   return (
-    <Stage chapter="12" name="推理看延迟" tag="decode / KV">
+    <Stage chapter="11" name="推理看延迟" tag="decode / KV">
       <Card x={96} y={180} opacity={left} kicker="DECODE" title="逐 token 解码" body={'每生成一个 token，张量并行都要做一次很小的 AllReduce。\n数据不大，时间几乎全是固定延迟。'} accent={SIGNAL} />
       <Card x={1000} y={180} opacity={right} kicker="PREFILL → DECODE" title="KV Cache 要搬走" body={'预填充和解码拆开时，缓存要跨卡搬一次。\n这一下看的是带宽，不是延迟。'} accent={COPPER_HI} />
       <svg width="1920" height="1080" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
         <line x1={872} y1={360} x2={984} y2={360} stroke={COPPER} strokeWidth={2} opacity={right} />
         <rect x={878 + fly * 70} y={346} width={26} height={26} rx={5} fill={COPPER_HI} opacity={right} />
       </svg>
-      <div style={{ position: 'absolute', left: 96, right: 96, top: 700, fontSize: 40, fontWeight: 500, opacity: note }}>
+      {/* decode timeline: each token pays one small AllReduce (α) before the next starts */}
+      <div style={{ position: 'absolute', left: 96, right: 96, top: 600, opacity: note }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          {Array.from({ length: 8 }, (_, i) => {
+            const t = rise(frame, 190 + i * 12, 10);
+            return (
+              <React.Fragment key={i}>
+                <div style={{ padding: '8px 16px', borderRadius: 8, background: '#1d140e', border: `1.5px solid ${COPPER}`, fontFamily: 'JetBrains Mono, monospace', fontSize: 32, color: INK, opacity: t }}>token {i + 1}</div>
+                {i < 7 ? <div style={{ fontSize: 32, color: SIGNAL, opacity: t }}>⇄α</div> : null}
+              </React.Fragment>
+            );
+          })}
+        </div>
+        <div style={{ marginTop: 10, fontSize: 32, color: INK2 }}>每个 token 之间都卡着一次小 AllReduce：数据小，付的全是 α，所以推理拼延迟</div>
+      </div>
+      <div style={{ position: 'absolute', left: 96, right: 96, top: 760, fontSize: 40, fontWeight: 500, opacity: note }}>
         MoE 的专家交换就是前面算过的 All-to-All。账看 busBW，留在柜内。
       </div>
     </Stage>

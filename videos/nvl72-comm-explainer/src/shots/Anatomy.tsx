@@ -101,6 +101,9 @@ export const AnatomyShot: React.FC = () => {
         </div>
       </div>
 
+      <div style={{ position: 'absolute', left: 1080, top: 118, fontSize: 32, color: INK2, opacity: gpuIn }}>
+        一块 GPU 的 18 条 NVLink，每条去一颗不同的交换芯片 →
+      </div>
       <div style={{ position: 'absolute', left: 1360, top: 168, opacity: domain }}>
         <div style={{ fontFamily: MONO, fontSize: 64, fontWeight: 700, color: SIGNAL, lineHeight: 1 }}>18</div>
         <div style={{ fontSize: 32, fontWeight: 500, marginTop: 6 }}>颗交换芯片</div>

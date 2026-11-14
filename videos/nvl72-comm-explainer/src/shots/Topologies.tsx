@@ -169,6 +169,11 @@ export const TopologiesShot: React.FC = () => {
   return (
     <Stage chapter="04" name="五种接法" tag="示意 · 8 卡">
       <Tabs active={idx} />
+      {idx < PHASES.length ? (
+        <div style={{ position: 'absolute', left: 80, top: 196, fontSize: 30, color: INK2 }}>
+          <span style={{ color: COPPER_HI }}>■</span> 橙色块 = 一个数据包，从 GPU0 出发，去最远的那张卡
+        </div>
+      ) : null}
       {idx < PHASES.length ? <Diagram idx={idx} local={local} /> : <Summary local={local} />}
     </Stage>
   );

@@ -48,7 +48,8 @@ export const SplitShot: React.FC = () => {
               }}
             >
               <div style={{ fontFamily: MONO, fontSize: 32, color: COPPER_HI, fontWeight: 700 }}>GPU</div>
-              <div style={{ marginTop: 8, fontSize: 32, color: INK2 }}>{index === 3 ? '186 GB' : '显存'}</div>
+              <div style={{ marginTop: 6, fontFamily: MONO, fontSize: 32, color: COPPER_HI, opacity: split }}>W{index + 1}</div>
+              <div style={{ marginTop: 6, fontSize: 32, color: INK2 }}>{index === 3 ? '186 GB' : '显存'}</div>
             </div>
           );
         })}
@@ -74,6 +75,13 @@ export const SplitShot: React.FC = () => {
       <div style={{ position: 'absolute', left: 96, top: 760, fontSize: 36, color: INK, opacity: count }}>
         810 ÷ 186 ≈ <Num size={48} color={COPPER_HI}>4.4</Num>
         <span style={{ color: INK2 }}> ，光权重至少 5 块卡，还没算 KV 和激活</span>
+      </div>
+      {/* capacity bar: one card's 186 GB against the 810 GB weight block */}
+      <div style={{ position: 'absolute', left: 96, top: 850, width: 1100, opacity: count }}>
+        <div style={{ display: 'flex', height: 26, borderRadius: 8, overflow: 'hidden', background: 'rgba(255,255,255,0.06)' }}>
+          <div style={{ width: `${(186 / 810) * 100 * Math.min(1, count + 0.2)}%`, background: COPPER_HI }} />
+        </div>
+        <div style={{ marginTop: 8, fontSize: 32, color: INK2 }}>橙色 = 一块卡装得下的 186 GB；剩下约 624 GB 必须摊到别的卡上，切开就得通信</div>
       </div>
     </Stage>
   );
